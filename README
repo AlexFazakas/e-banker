@@ -1,0 +1,48 @@
+Fazakas Alexandru
+321CC
+
+== Implementare ==
+
+Am folosit TCP pentru tot, mai putin pentru UNLOCK unde am (incercat) folosit UDP.
+Mesajele intoarse sunt in principal cele exemplificate in PDF-ul aferent temei.
+
+Am folosit o structura pentru datele din fisierul de intrare care tine minte tot
+ce avem nevoie.
+Fiecare comanda este parsata si efectuata individual.
+
+Pentru login, extragem numarul cardului si pinul. Daca nu exista numarul cardului
+in tabelul cu date, atunci intoarcem un mesaj corespunzator. Daca exista, insa pinul
+este gresit, incrementam si vectorul care tine minte numarul de incercari gresite pentru
+un card anume. Odata atinse 3 incercari consecutive gresite, cardul va fi blocat.
+Asemanator, am folosit un vector pentru a tine minte care utilizatori sunt logati,
+pentru a nu putea fi mai multe conexiuni pe acelasi cont.
+
+Pentru logout am folosit atat o variabila in client (loggedIn) care ne spune daca cineva
+este logat in acel moment pe client. Vectorul de pe server este modificat corespunzator
+la orice apel corect al lui logout.
+
+Listsold se foloseste de o mapare de tipul (Cont logat) <=> (Socket) astfel incat la orice
+moment de timp stim ce user este logat pe ce "masina". Aici ne-am folosit de logged_users[]
+si de logged_users_fd[] si de functiile care ne intorc indicele unui user din tabela, dupa
+numarul cardului (get_user_index()) si dupa socket (get_user_index_by_sockfd()).
+
+In cazul lui transfer am mai adaugat 2 vectori pentru a putea tine minte intre apeluri
+cui ar trebui trimisa suma si care este aceasta. De asemenea, in client am adaugat o variabila
+(aboutToSendConfirmation) care ne spune cand un client urmeaza sa trimita o confirmare pentru
+un transfer.
+
+Nu am mai avut timp sa termin, insa unlock este implementat partial. Conexiunea UDP este
+realizata si utilizabila, insa mesajele transmise nu sunt corecte (uneori chiar fortand
+terminarea procesului).
+
+Comenzile de quit au fost implementate. Cand un client primeste quit, acesta ii va transmite
+mai departe serverului, in timp ce atunci cand server-ul primeste quit, el va transmite
+mai departe tuturor clientilor conectati si va inchide conexiunile aferente.
+
+All in all, totul a fost implementat si este functional (incluzand fisierele de log,
+pe testarile mele) cu exceptia unlock (care functioneaza partial).
+
+Dificultate tema: 6/10
+Timp alocat temei: ~15h
+Feedack tema: O tema destul de faina si distractiva. Operatiile nu erau explicate
+chiar pe indelete uneori, insa destul de bine overall. :)
